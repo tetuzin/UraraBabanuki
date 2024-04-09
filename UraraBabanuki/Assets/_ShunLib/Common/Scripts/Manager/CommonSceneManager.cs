@@ -15,16 +15,16 @@ namespace ShunLib.Manager.CommonScene
         // ---------- ゲームオブジェクト参照変数宣言 ----------
 
         [Header("カメラマネージャー")]
-        [SerializeField] protected CameraManager _cameraManager = default;
+        [SerializeField] protected CameraManager cameraManager = default;
 
         [Header("UIマネージャー")]
-        [SerializeField] protected UIManager _uiManager = default;
+        [SerializeField] protected UIManager uiManager = default;
 
         [Header("キャラクターコントローラ3D")]
-        [SerializeField] protected CharacterController3D _characterController3D = default;
+        [SerializeField] protected CharacterController3D characterController3D = default;
 
         [Header("キーコントローラ")]
-        [SerializeField] protected InputKeyController _inputKeyController = default;
+        [SerializeField] protected InputKeyController inputKeyController = default;
 
         [Header("「開発中」表示用プレハブ")] 
         [SerializeField] private SimpleTextPopup _developTextPopup = default;
@@ -47,7 +47,7 @@ namespace ShunLib.Manager.CommonScene
         // 「開発中」テキスト表示
         public void ShowDevelopText()
         {
-            _uiManager.CreateOpenPopup(_developTextPopup, null, (p) => {
+            uiManager.CreateOpenPopup(_developTextPopup, null, (p) => {
                 SimpleTextPopup popup = (SimpleTextPopup)p;
                 popup.SetMainText("開発中");
                 popup.SetShowTime(1f);
@@ -61,25 +61,25 @@ namespace ShunLib.Manager.CommonScene
         protected virtual void Initialize()
         {
             // UIManager初期化
-            _uiManager.Initialize();
+            uiManager.Initialize();
 
             // CameraManager初期化
-            _cameraManager.Initialize();
+            cameraManager.Initialize();
 
             // キャラクターコントローラ3D初期化
-            if (_characterController3D != default)
+            if (characterController3D != default)
             {
-                _characterController3D?.SetCameraManager(_cameraManager);
-                _cameraManager.SetTrackObject(_characterController3D.GetAvatorCamera());
-                _characterController3D?.Initialize();
+                characterController3D?.SetCameraManager(cameraManager);
+                cameraManager.SetTrackObject(characterController3D.GetAvatorCamera());
+                characterController3D?.Initialize();
             }
             
             // キーコントローラ初期化
-            if (_inputKeyController != default)
+            if (inputKeyController != default)
             {
-                _inputKeyController.Initialize();
-                _characterController3D?.SetKeyController(_inputKeyController);
-                _inputKeyController.EnableKeyCtrl = true;
+                inputKeyController.Initialize();
+                characterController3D?.SetKeyController(inputKeyController);
+                inputKeyController.EnableKeyCtrl = true;
             }
 
             // データ設定
@@ -104,9 +104,9 @@ namespace ShunLib.Manager.CommonScene
         // キャラクターコントローラのオンオフ
         protected virtual void SwitchEnableCharacterController(bool b)
         {
-            if (_characterController3D != default)
+            if (characterController3D != default)
             {
-                _characterController3D.IsEnable = b;
+                characterController3D.IsEnable = b;
             }
         }
     }

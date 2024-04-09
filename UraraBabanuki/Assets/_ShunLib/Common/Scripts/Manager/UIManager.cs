@@ -262,6 +262,17 @@ namespace ShunLib.Manager.UI
             _canvasGroupList.GetValue(key).blocksRaycasts = isActive;
         }
 
+        // 全キャンバスグループの表示・非表示
+        public void SetAllCanvasGroupActive(bool isActive)
+        {
+            foreach (CanvasGroup cg in _canvasGroupList.GetValueArray())
+            {
+                cg.alpha = isActive ? 1 : 0;
+                cg.interactable = isActive;
+                cg.blocksRaycasts = isActive;
+            }
+        }
+
         // キャンバスグループのフェード
         public void FadeCanvasGroup(string key, bool isActive, float speed, Action callback = null)
         {
@@ -456,12 +467,7 @@ namespace ShunLib.Manager.UI
         // 全キャンバスグループの初期化
         private void InitCanvasGroup()
         {
-            foreach (CanvasGroup cg in _canvasGroupList.GetValueArray())
-            {
-                cg.alpha = 0f;
-                cg.interactable = false;
-                cg.blocksRaycasts = false;
-            }
+            SetAllCanvasGroupActive(false);
         }
 
         // 全トグルの初期化
