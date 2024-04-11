@@ -2,6 +2,8 @@ namespace UraraBabanuki.Scripts
 {
     public class GameConst
     {
+        // 手札の枚数（ジョーカー抜き）
+        public const int MAX_HAND_COUNT = 4;
         // シーン名
         public const string SCENE_TITLE = "TitleScene";   // タイトル
         public const string SCENE_GAME = "GameScene";   // ゲーム
