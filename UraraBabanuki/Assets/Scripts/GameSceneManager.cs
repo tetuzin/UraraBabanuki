@@ -13,24 +13,18 @@ namespace UraraBabanuki.Scripts
         // ---------- 定数宣言 ----------
         // ---------- ゲームオブジェクト参照変数宣言 ----------
 
+        [Header("プレイヤーの手札")]
+        [SerializeField] private PlayerHand _playerHand = default;
+        [Header("エネミーの手札")]
+        [SerializeField] private PlayerHand _enemyHand = default;
+
         [Header("カードプレハブ")]
         [SerializeField] private List<CardUnit> _cardUnitPrefabs = default;
-
-        [Header("プレイヤーの手札Object")]
-        [SerializeField] private GameObject _playerHandObject = default;
-        [Header("エネミーの手札Object")]
-        [SerializeField] private GameObject _enemyHandObject = default;
 
         // ---------- プレハブ ----------
         // ---------- プロパティ ----------
         // ---------- クラス変数宣言 ----------
         // ---------- インスタンス変数宣言 ----------
-
-        // プレイヤー手札
-        private List<CardUnit> _playerCardUnitList = default;
-        // エネミー手札
-        private List<CardUnit> _enemyCardUnitList = default;
-
         // ---------- Unity組込関数 ----------
         // ---------- Public関数 ----------
         // ---------- Private関数 ----------
@@ -39,48 +33,26 @@ namespace UraraBabanuki.Scripts
         private void InitCardUnitList()
         {
             // プレイヤー
-            _playerCardUnitList = new List<CardUnit>();
-            for (int i = 1; i <= GameConst.MAX_HAND_COUNT; i++)
-            {
-                CardUnit unit = Instantiate(_cardUnitPrefabs[i], Vector3.zero, Quaternion.identity);
-                unit.transform.SetParent(_playerHandObject.transform);
-                unit.transform.localPosition = Vector3.zero;
-                unit.transform.localScale = Vector3.one;
-                unit.Initialize();
-                _playerCardUnitList.Add(unit);
-            }
+            _playerHand.InitCardUnitList(_cardUnitPrefabs);
 
             // エネミー
-            _enemyCardUnitList = new List<CardUnit>();
-            for (int i = 1; i <= GameConst.MAX_HAND_COUNT; i++)
-            {
-                CardUnit unit = Instantiate(_cardUnitPrefabs[i], Vector3.zero, Quaternion.identity);
-                unit.transform.SetParent(_enemyHandObject.transform);
-                unit.transform.localPosition = Vector3.zero;
-                unit.transform.localScale = Vector3.one;
-                unit.Initialize();
-                _enemyCardUnitList.Add(unit);
-            }
+            _enemyHand.InitCardUnitList(_cardUnitPrefabs);
 
             // ジョーカー(ランダムに割り振る)
             CardUnit joker = Instantiate(_cardUnitPrefabs[0], Vector3.zero, Quaternion.identity);
             joker.Initialize();
             if (RandomUtils.GetRandomBool(2))
             {
-                joker.transform.SetParent(_enemyHandObject.transform);
-                joker.transform.localPosition = Vector3.zero;
-                joker.transform.localScale = Vector3.one;
-                _enemyCardUnitList.Add(joker);
+                _playerHand.AddCardUnitList(joker);
             }
             else
             {
-                joker.transform.SetParent(_playerHandObject.transform);
-                joker.transform.localPosition = Vector3.zero;
-                joker.transform.localScale = Vector3.one;
-                _playerCardUnitList.Add(joker);
+                _enemyHand.AddCardUnitList(joker);
             }
             
-            // TODO カード整列
+            // カード整列
+            _playerHand.Alignment();
+            _enemyHand.Alignment();
         }
 
         // オプション
