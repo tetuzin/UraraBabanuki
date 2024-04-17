@@ -57,7 +57,38 @@ namespace UraraBabanuki.Scripts
         // 手札を扇形に整列
         public void Alignment()
         {
+            float[] _cardPos = new float[_cardUnitList.Count];
+            float[] _cardRot = new float[_cardUnitList.Count];
+
+            // カードのX座標を計算
+            float _distance = _rightHandObject.transform.localPosition.x - _leftHandObject.transform.localPosition.x;
+            float _interval = _distance / (_cardUnitList.Count - 1);
+            float _totalInterval = 0f;
+            for (int i = 0; i < _cardUnitList.Count; i++)
+            {
+                _cardPos[i] = (float)(_leftHandObject.transform.localPosition.x + _totalInterval);
+                _totalInterval +=  _interval;
+            }
+
+            // カードのZ傾きを計算
+            if (_cardUnitList.Count % 2 == 0)
+            {
+                // 手札枚数が偶数のとき
+
+            }
+            else
+            {
+                // 手札枚数が奇数のとき
+            }
             
+            // カードオブジェクトを移動&傾ける
+            for (int i = 0; i < _cardUnitList.Count; i++)
+            {
+                _cardUnitList[i].transform.SetParent(_playerHandObject.transform);
+                _cardUnitList[i].transform.localPosition = new Vector3(_cardPos[i], 70f, 0f);
+                // _cardUnitList[i].transform.localRotate = new Vector3(0f, 0f, _cardRot[i]);
+                _cardUnitList[i].transform.localScale = Vector3.one;
+            }
         }
 
         // ---------- Private関数 ----------
