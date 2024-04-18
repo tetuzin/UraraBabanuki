@@ -7,6 +7,16 @@ namespace UraraBabanuki.Scripts
     public class PlayerHand : MonoBehaviour
     {
         // ---------- 定数宣言 ----------
+
+        // 左端カードの傾き
+        private const float _leftCardRotate = 35f;
+        // 右端カードの傾き
+        private const float _rightCardRotate = -35f;
+        // 手持ちカードの高さ
+        private const float _handCardPosY = 70f;
+        // 手持ちカードの高さ上昇値
+        private const float _handCardIntervalPosY = 20f;
+
         // ---------- ゲームオブジェクト参照変数宣言 ----------
 
         [Header("左手オブジェクト")]
@@ -57,36 +67,52 @@ namespace UraraBabanuki.Scripts
         // 手札を扇形に整列
         public void Alignment()
         {
-            float[] _cardPos = new float[_cardUnitList.Count];
-            float[] _cardRot = new float[_cardUnitList.Count];
+            float[] _cardPosX = new float[_cardUnitList.Count];
+            float[] _cardPosY = new float[_cardUnitList.Count];
+            float[] _cardRotZ = new float[_cardUnitList.Count];
 
             // カードのX座標を計算
-            float _distance = _rightHandObject.transform.localPosition.x - _leftHandObject.transform.localPosition.x;
-            float _interval = _distance / (_cardUnitList.Count - 1);
-            float _totalInterval = 0f;
+            float _posXDistance = _rightHandObject.transform.localPosition.x - _leftHandObject.transform.localPosition.x;
+            float _posXInterval = _posXDistance / (_cardUnitList.Count - 1);
+            float _posXTotalInterval = 0f;
+            float _rotZLeftInterval = _leftCardRotate / (_cardUnitList.Count / 2);
+            float _rotZTotalLeftInterval = 0f;
+            float _rotZRightInterval = _rightCardRotate / (_cardUnitList.Count / 2);
+            float _rotZTotalRightInterval = 0f;
+            float _posYTotalInterval = 0f;
             for (int i = 0; i < _cardUnitList.Count; i++)
             {
-                _cardPos[i] = (float)(_leftHandObject.transform.localPosition.x + _totalInterval);
-                _totalInterval +=  _interval;
-            }
+                _cardPosX[i] = (float)(_leftHandObject.transform.localPosition.x + _posXTotalInterval);
+                _posXTotalInterval +=  _posXInterval;
 
-            // カードのZ傾きを計算
-            if (_cardUnitList.Count % 2 == 0)
-            {
-                // 手札枚数が偶数のとき
-
-            }
-            else
-            {
-                // 手札枚数が奇数のとき
+                // カードのZ傾きを計算
+                if (i < (_cardUnitList.Count / 2))
+                {
+                    _cardRotZ[i] = _leftCardRotate - _rotZTotalLeftInterval;
+                    _rotZTotalLeftInterval += _rotZLeftInterval;
+                    _cardPosY[i] = _handCardPosY + _posYTotalInterval;
+                    _posYTotalInterval += _handCardIntervalPosY;
+                }
+                else if (_cardUnitList.Count % 2 == 1 && i == (_cardUnitList.Count / 2))
+                {
+                    _cardRotZ[i] = 0f;
+                    _cardPosY[i] = _handCardPosY + _posYTotalInterval - (_handCardIntervalPosY / 1.5f);
+                }
+                else
+                {
+                    _rotZTotalRightInterval += _rotZRightInterval;
+                    _cardRotZ[i] = _rotZTotalRightInterval;
+                    _posYTotalInterval -= _handCardIntervalPosY;
+                    _cardPosY[i] = _handCardPosY + _posYTotalInterval;
+                }
             }
             
             // カードオブジェクトを移動&傾ける
             for (int i = 0; i < _cardUnitList.Count; i++)
             {
                 _cardUnitList[i].transform.SetParent(_playerHandObject.transform);
-                _cardUnitList[i].transform.localPosition = new Vector3(_cardPos[i], 70f, 0f);
-                // _cardUnitList[i].transform.localRotate = new Vector3(0f, 0f, _cardRot[i]);
+                _cardUnitList[i].transform.localPosition = new Vector3(_cardPosX[i], _cardPosY[i], 0f);
+                _cardUnitList[i].transform.localRotation = Quaternion.Euler(0f, 0f, _cardRotZ[i]);
                 _cardUnitList[i].transform.localScale = Vector3.one;
             }
         }
