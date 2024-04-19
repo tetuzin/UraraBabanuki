@@ -12,10 +12,10 @@ namespace UraraBabanuki.Scripts
         private const float _leftCardRotate = 35f;
         // 右端カードの傾き
         private const float _rightCardRotate = -35f;
-        // 手持ちカードの高さ
-        private const float _handCardPosY = 70f;
-        // 手持ちカードの高さ上昇値
-        private const float _handCardIntervalPosY = 20f;
+        // 手札カード持ち手高さ
+        private const float _handCardHeight = 70f;
+        // 比例定数
+        private const float _cons = -0.005f;
 
         // ---------- ゲームオブジェクト参照変数宣言 ----------
 
@@ -79,31 +79,34 @@ namespace UraraBabanuki.Scripts
             float _rotZTotalLeftInterval = 0f;
             float _rotZRightInterval = _rightCardRotate / (_cardUnitList.Count / 2);
             float _rotZTotalRightInterval = 0f;
-            float _posYTotalInterval = 0f;
             for (int i = 0; i < _cardUnitList.Count; i++)
             {
                 _cardPosX[i] = (float)(_leftHandObject.transform.localPosition.x + _posXTotalInterval);
                 _posXTotalInterval +=  _posXInterval;
+                if (_cardPosX[i] != 0)
+                {
+                    _cardPosY[i] = _handCardHeight + (_cons * _cardPosX[i] * _cardPosX[i]);
+                }
+                else
+                {
+                    _cardPosY[i] = _handCardHeight + _cons;
+                }
+                
 
                 // カードのZ傾きを計算
                 if (i < (_cardUnitList.Count / 2))
                 {
                     _cardRotZ[i] = _leftCardRotate - _rotZTotalLeftInterval;
                     _rotZTotalLeftInterval += _rotZLeftInterval;
-                    _cardPosY[i] = _handCardPosY + _posYTotalInterval;
-                    _posYTotalInterval += _handCardIntervalPosY;
                 }
                 else if (_cardUnitList.Count % 2 == 1 && i == (_cardUnitList.Count / 2))
                 {
                     _cardRotZ[i] = 0f;
-                    _cardPosY[i] = _handCardPosY + _posYTotalInterval - (_handCardIntervalPosY / 1.5f);
                 }
                 else
                 {
                     _rotZTotalRightInterval += _rotZRightInterval;
                     _cardRotZ[i] = _rotZTotalRightInterval;
-                    _posYTotalInterval -= _handCardIntervalPosY;
-                    _cardPosY[i] = _handCardPosY + _posYTotalInterval;
                 }
             }
             
