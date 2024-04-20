@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UraraBabanuki.Scripts
 {
@@ -8,6 +9,11 @@ namespace UraraBabanuki.Scripts
     {
         // ---------- 定数宣言 ----------
         // ---------- ゲームオブジェクト参照変数宣言 ----------
+        [Header("カード画像")] 
+        [SerializeField] private Image _frontImage = default;
+        [Header("カード背景画像")] 
+        [SerializeField] private Image _backImage = default;
+
         // ---------- プレハブ ----------
         // ---------- プロパティ ----------
         // ---------- クラス変数宣言 ----------
@@ -22,6 +28,13 @@ namespace UraraBabanuki.Scripts
         public void Initialize()
         {
             
+        }
+
+        // カード画像設定
+        public void SetImage(Sprite frontSprite, Sprite backSprite)
+        {
+            _frontImage.sprite = frontSprite;
+            _backImage.sprite = backSprite;
         }
 
         // ---------- Private関数 ----------

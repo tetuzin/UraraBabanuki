@@ -944,12 +944,8 @@ MonoBehaviour:
   _developTextPopup: {fileID: 5206909257035938164, guid: ace316e5056613a4eaca7c399d5ab712, type: 3}
   _playerHand: {fileID: 1569816960}
   _enemyHand: {fileID: 510438738}
-  _cardUnitPrefabs:
-  - {fileID: 1530538449987150409, guid: 238e3bc48e5bafd4fab3f5fe96251374, type: 3}
-  - {fileID: 1530538449987150409, guid: 050c44ac6ef96af44b06a3a6b7bd85bf, type: 3}
-  - {fileID: 1530538449987150409, guid: ce5da08fa2320e24f9afe780a2b8fe0d, type: 3}
-  - {fileID: 1530538449987150409, guid: 160d78a770f0f61429e28302d953dc62, type: 3}
-  - {fileID: 1530538449987150409, guid: 019724c7381e06f4d8339305cc64c2e5, type: 3}
+  _cardDesignObject: {fileID: 11400000, guid: 90057519fceb7c3438c81e5bdd9ba9f9, type: 2}
+  _cardUnitPrefab: {fileID: 1530538449987150409, guid: 050c44ac6ef96af44b06a3a6b7bd85bf, type: 3}
 --- !u!1 &2121882317
 GameObject:
   m_ObjectHideFlags: 0

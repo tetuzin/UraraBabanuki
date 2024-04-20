@@ -18,8 +18,10 @@ namespace UraraBabanuki.Scripts
         [Header("エネミーの手札")]
         [SerializeField] private PlayerHand _enemyHand = default;
 
+        [Header("カードデザインオブジェクト")]
+        [SerializeField] private CardDesignScriptableObject _cardDesignObject = default;
         [Header("カードプレハブ")]
-        [SerializeField] private List<CardUnit> _cardUnitPrefabs = default;
+        [SerializeField] private CardUnit _cardUnitPrefab = default;
 
         // ---------- プレハブ ----------
         // ---------- プロパティ ----------
@@ -32,27 +34,46 @@ namespace UraraBabanuki.Scripts
         // お互いの手札を初期化
         private void InitCardUnitList()
         {
-            // プレイヤー
-            _playerHand.InitCardUnitList(_cardUnitPrefabs);
-
-            // エネミー
-            _enemyHand.InitCardUnitList(_cardUnitPrefabs);
+            List<CardUnit> _playerCardUnitList = CreateCardUnitList();
+            List<CardUnit> _enemyCardUnitList = CreateCardUnitList();
 
             // ジョーカー(ランダムに割り振る)
-            CardUnit joker = Instantiate(_cardUnitPrefabs[0], Vector3.zero, Quaternion.identity);
-            joker.Initialize();
+            CardUnit joker = CreateCardUnit(0);
             if (RandomUtils.GetRandomBool(2))
-            {
-                _playerHand.AddCardUnitList(joker);
-            }
+                _playerCardUnitList.Add(joker);
             else
-            {
-                _enemyHand.AddCardUnitList(joker);
-            }
+                _enemyCardUnitList.Add(joker);
+
+            // 手札格納
+            _playerHand.InitCardUnitList(_playerCardUnitList);
+            _enemyHand.InitCardUnitList(_enemyCardUnitList);
             
             // カード整列
             _playerHand.Alignment();
             _enemyHand.Alignment();
+        }
+
+        // 手札生成
+        private List<CardUnit> CreateCardUnitList()
+        {
+            List<CardUnit> _cardUnitList = new List<CardUnit>();
+            for (int i = 1; i <= GameConst.MAX_HAND_COUNT; i++)
+            {
+                _cardUnitList.Add(CreateCardUnit(i));
+            }
+            return _cardUnitList;
+        }
+
+        // カード生成
+        private CardUnit CreateCardUnit(int number)
+        {
+            CardUnit unit = Instantiate(_cardUnitPrefab, Vector3.zero, Quaternion.identity);
+            unit.transform.localPosition = Vector3.zero;
+            unit.transform.localScale = Vector3.one;
+            unit.Initialize();
+            unit.Number = number;
+            unit.SetImage(_cardDesignObject.CardImageList[number], _cardDesignObject.CardBackImage);
+            return unit;
         }
 
         // オプション
@@ -67,6 +88,7 @@ namespace UraraBabanuki.Scripts
         // データ設定
         protected override void InitializeData()
         {
+            if (_cardDesignObject == default) return;
             InitCardUnitList();
         }
 

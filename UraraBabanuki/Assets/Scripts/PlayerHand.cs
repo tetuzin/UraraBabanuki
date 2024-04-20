@@ -42,15 +42,12 @@ namespace UraraBabanuki.Scripts
         // 手札初期化
         public void InitCardUnitList(List<CardUnit> _cardUnitPrefabs)
         {
-            _cardUnitList = new List<CardUnit>();
-            for (int i = 1; i <= GameConst.MAX_HAND_COUNT; i++)
+            _cardUnitList = _cardUnitPrefabs;
+            foreach (CardUnit card in _cardUnitList)
             {
-                CardUnit unit = Instantiate(_cardUnitPrefabs[i], Vector3.zero, Quaternion.identity);
-                unit.transform.SetParent(_playerHandObject.transform);
-                unit.transform.localPosition = Vector3.zero;
-                unit.transform.localScale = Vector3.one;
-                unit.Initialize();
-                _cardUnitList.Add(unit);
+                card.transform.SetParent(_playerHandObject.transform);
+                card.transform.localPosition = Vector3.zero;
+                card.transform.localScale = Vector3.one;
             }
         }
 
@@ -91,7 +88,6 @@ namespace UraraBabanuki.Scripts
                 {
                     _cardPosY[i] = _handCardHeight + _cons;
                 }
-                
 
                 // カードのZ傾きを計算
                 if (i < (_cardUnitList.Count / 2))
