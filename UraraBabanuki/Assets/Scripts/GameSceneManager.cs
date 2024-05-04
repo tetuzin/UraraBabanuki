@@ -5,6 +5,7 @@ using UnityEngine;
 using ShunLib.Manager.CommonScene;
 using ShunLib.Manager.Scene;
 using ShunLib.Utils.Random;
+using UnityEditor.Experimental.GraphView;
 
 namespace UraraBabanuki.Scripts
 {
@@ -27,6 +28,10 @@ namespace UraraBabanuki.Scripts
         // ---------- プロパティ ----------
         // ---------- クラス変数宣言 ----------
         // ---------- インスタンス変数宣言 ----------
+
+        // 選択中カードNo
+        private CardUnit _selectCard = default;
+
         // ---------- Unity組込関数 ----------
         // ---------- Public関数 ----------
         // ---------- Private関数 ----------
@@ -47,6 +52,29 @@ namespace UraraBabanuki.Scripts
             // 手札格納
             _playerHand.InitCardUnitList(_playerCardUnitList);
             _enemyHand.InitCardUnitList(_enemyCardUnitList);
+
+            // エネミー手札にイベントを設定
+            foreach (CardUnit card in _enemyCardUnitList)
+            {
+                card.SetOnClickAction(() => {
+                    if (card == _selectCard)
+                    {
+                        Debug.Log("!!!!");
+                    }  
+                    else if (_selectCard != default)
+                    {
+                        Debug.Log("Number = " + _selectCard.Number);
+                        _enemyHand.SelectCardDown(_selectCard.Number);
+                        _selectCard = card;
+                        _enemyHand.SelectCardUp(card.Number);
+                    }
+                    else
+                    {
+                        _selectCard = card;
+                        _enemyHand.SelectCardUp(card.Number);
+                    }
+                });
+            }
             
             // カード整列
             _playerHand.Alignment();
