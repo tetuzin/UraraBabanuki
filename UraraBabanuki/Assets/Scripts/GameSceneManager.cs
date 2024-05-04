@@ -57,17 +57,29 @@ namespace UraraBabanuki.Scripts
             foreach (CardUnit card in _enemyCardUnitList)
             {
                 card.SetOnClickAction(() => {
+
+                    // 選択中のカードをクリック
                     if (card == _selectCard)
                     {
-                        if (_enemyHand.CheckCardNumber(_selectCard.Number))
+                        // 手札とかぶるカードの時
+                        if (_enemyHand.CheckCardNumber(_selectCard.Number) && _playerHand.CheckCardNumber(_selectCard.Number))
                         {
                             _enemyHand.DeleteCard(_selectCard.Number);
+                            _playerHand.DeleteCard(_selectCard.Number);
+                            _selectCard = default;
+                        }
+
+                        // 手札とかぶらないカードの時
+                        else if (_enemyHand.CheckCardNumber(_selectCard.Number))
+                        {
+                            MoveHandCard(_selectCard.Number, _enemyHand, _playerHand);
                             _selectCard = default;
                         }
                     }  
+
+                    // 選択されていないカードをクリック
                     else if (_selectCard != default)
                     {
-                        Debug.Log("Number = " + _selectCard.Number);
                         _enemyHand.SelectCardDown(_selectCard.Number);
                         _selectCard = card;
                         _enemyHand.SelectCardUp(card.Number);
@@ -106,6 +118,13 @@ namespace UraraBabanuki.Scripts
             unit.Number = number;
             unit.SetImage(_cardDesignObject.CardImageList[number], _cardDesignObject.CardBackImage);
             return unit;
+        }
+
+        // カードの移動
+        private void MoveHandCard(int cardNumber, PlayerHand popHand, PlayerHand pushHand)
+        {
+            CardUnit card = popHand.PopCard(cardNumber);
+            pushHand.PushCard(card);
         }
 
         // オプション

@@ -4,6 +4,10 @@ namespace UraraBabanuki.Scripts
     {
         // 手札の枚数（ジョーカー抜き）
         public const int MAX_HAND_COUNT = 4;
+
+        // ジョーカーの添え字番号
+        public const int JOKER_NUMBER = 0;
+        
         // シーン名
         public const string SCENE_TITLE = "TitleScene";   // タイトル
         public const string SCENE_GAME = "GameScene";   // ゲーム

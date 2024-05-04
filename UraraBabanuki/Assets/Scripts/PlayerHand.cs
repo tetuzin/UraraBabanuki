@@ -185,6 +185,36 @@ namespace UraraBabanuki.Scripts
             return false;
         }
 
+        // カードを加える
+        public void PushCard(CardUnit pushCard)
+        {
+            _cardUnitList.Add(pushCard);
+            pushCard.transform.SetParent(_playerHandObject.transform);
+            pushCard.transform.position = Vector3.zero;
+            pushCard.transform.rotation = Quaternion.identity;
+            Alignment();
+        }
+
+        // 指定番号のカードを返す
+        public CardUnit PopCard(int number)
+        {
+            CardUnit popCard = new CardUnit();
+            foreach (CardUnit card in _cardUnitList)
+            {
+                if (card.Number == number) 
+                {
+                    popCard = card;
+                    popCard.transform.SetParent(null);
+                    popCard.transform.position = Vector3.zero;
+                    popCard.transform.rotation = Quaternion.identity;
+                    _cardUnitList.Remove(card);
+                    Alignment();
+                    return card;
+                }
+            }
+            return popCard;
+        }
+
         // 指定番号のカードを削除
         public void DeleteCard(int number)
         {
