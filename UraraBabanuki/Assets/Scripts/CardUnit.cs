@@ -60,6 +60,12 @@ namespace UraraBabanuki.Scripts
             _onClickAction = action;
         }
 
+        // カード削除
+        public void Delete()
+        {
+            Destroy(this.gameObject);
+        }
+
         // ---------- Private関数 ----------
         // ---------- protected関数 ---------
         // ---------- デバッグ用関数 ---------

@@ -64,45 +64,72 @@ namespace UraraBabanuki.Scripts
         // 手札を扇形に整列
         public void Alignment()
         {
+            // 各カードの座標を計算
             float[] _cardPosX = new float[_cardUnitList.Count];
             float[] _cardPosY = new float[_cardUnitList.Count];
             float[] _cardRotZ = new float[_cardUnitList.Count];
-
-            // カードのX座標を計算
-            float _posXDistance = _rightHandObject.transform.localPosition.x - _leftHandObject.transform.localPosition.x;
-            float _posXInterval = _posXDistance / (_cardUnitList.Count - 1);
-            float _posXTotalInterval = 0f;
-            float _rotZLeftInterval = LEFT_CARD_ROTATE / (_cardUnitList.Count / 2);
-            float _rotZTotalLeftInterval = 0f;
-            float _rotZRightInterval = RIGHT_CARD_ROTATE / (_cardUnitList.Count / 2);
-            float _rotZTotalRightInterval = 0f;
-            for (int i = 0; i < _cardUnitList.Count; i++)
+            
+            // カードが1枚
+            if (_cardUnitList.Count == 1)
             {
-                _cardPosX[i] = (float)(_leftHandObject.transform.localPosition.x + _posXTotalInterval);
-                _posXTotalInterval +=  _posXInterval;
-                if (_cardPosX[i] != 0)
-                {
-                    _cardPosY[i] = HAND_CARD_HEIGHT + (CONS * _cardPosX[i] * _cardPosX[i]);
-                }
-                else
-                {
-                    _cardPosY[i] = HAND_CARD_HEIGHT + CONS;
-                }
+                float _posXCenter = (_rightHandObject.transform.localPosition.x + _leftHandObject.transform.localPosition.x) / 2;
+                _cardPosX[0] = _posXCenter;
+                _cardPosY[0] = HAND_CARD_HEIGHT;
+                _cardRotZ[0] = 0f;
+            }
 
-                // カードのZ傾きを計算
-                if (i < (_cardUnitList.Count / 2))
+            // カードが2枚
+            else if (_cardUnitList.Count == 2)
+            {
+                float _posXCenter = (_rightHandObject.transform.localPosition.x + _leftHandObject.transform.localPosition.x) / 2;
+
+                _cardPosX[0] = (_leftHandObject.transform.localPosition.x + _posXCenter) / 2;
+                _cardPosY[0] = HAND_CARD_HEIGHT + (CONS * _cardPosX[0] * _cardPosX[0]);
+                _cardRotZ[0] = LEFT_CARD_ROTATE / 2;
+
+                _cardPosX[1] = (_posXCenter + _rightHandObject.transform.localPosition.x) / 2;
+                _cardPosY[1] = HAND_CARD_HEIGHT + (CONS * _cardPosX[1] * _cardPosX[1]);
+                _cardRotZ[1] = RIGHT_CARD_ROTATE / 2;
+            }
+
+            // カードが3枚以上
+            else
+            {
+                float _posXDistance = _rightHandObject.transform.localPosition.x - _leftHandObject.transform.localPosition.x;
+                float _posXInterval = _posXDistance / (_cardUnitList.Count - 1);
+                float _posXTotalInterval = 0f;
+                float _rotZLeftInterval = LEFT_CARD_ROTATE / (_cardUnitList.Count / 2);
+                float _rotZTotalLeftInterval = 0f;
+                float _rotZRightInterval = RIGHT_CARD_ROTATE / (_cardUnitList.Count / 2);
+                float _rotZTotalRightInterval = 0f;
+                for (int i = 0; i < _cardUnitList.Count; i++)
                 {
-                    _cardRotZ[i] = LEFT_CARD_ROTATE - _rotZTotalLeftInterval;
-                    _rotZTotalLeftInterval += _rotZLeftInterval;
-                }
-                else if (_cardUnitList.Count % 2 == 1 && i == (_cardUnitList.Count / 2))
-                {
-                    _cardRotZ[i] = 0f;
-                }
-                else
-                {
-                    _rotZTotalRightInterval += _rotZRightInterval;
-                    _cardRotZ[i] = _rotZTotalRightInterval;
+                    _cardPosX[i] = (float)(_leftHandObject.transform.localPosition.x + _posXTotalInterval);
+                    _posXTotalInterval +=  _posXInterval;
+                    if (_cardPosX[i] != 0)
+                    {
+                        _cardPosY[i] = HAND_CARD_HEIGHT + (CONS * _cardPosX[i] * _cardPosX[i]);
+                    }
+                    else
+                    {
+                        _cardPosY[i] = HAND_CARD_HEIGHT + CONS;
+                    }
+
+                    // カードのZ傾きを計算
+                    if (i < (_cardUnitList.Count / 2))
+                    {
+                        _cardRotZ[i] = LEFT_CARD_ROTATE - _rotZTotalLeftInterval;
+                        _rotZTotalLeftInterval += _rotZLeftInterval;
+                    }
+                    else if (_cardUnitList.Count % 2 == 1 && i == (_cardUnitList.Count / 2))
+                    {
+                        _cardRotZ[i] = 0f;
+                    }
+                    else
+                    {
+                        _rotZTotalRightInterval += _rotZRightInterval;
+                        _cardRotZ[i] = _rotZTotalRightInterval;
+                    }
                 }
             }
             
@@ -146,6 +173,32 @@ namespace UraraBabanuki.Scripts
             if (selectCard == default) return;
             selectCard.transform.localPosition -= 
                 selectCard.transform.TransformDirection(Vector3.up) * (selectCard.GetCardSize().y / 2);
+        }
+
+        // 指定番号のカードの存在チェック
+        public bool CheckCardNumber(int number)
+        {
+            foreach (CardUnit card in _cardUnitList)
+            {
+                if (card.Number == number) return true;
+            }
+            return false;
+        }
+
+        // 指定番号のカードを削除
+        public void DeleteCard(int number)
+        {
+            foreach (CardUnit card in _cardUnitList)
+            {
+                if (card.Number == number)
+                {
+                    CardUnit deleteCard = card;
+                    _cardUnitList.Remove(card);
+                    deleteCard.Delete();
+                    Alignment();
+                    return;
+                }
+            }
         }
 
         // ---------- Private関数 ----------

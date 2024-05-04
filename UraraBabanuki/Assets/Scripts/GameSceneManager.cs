@@ -59,7 +59,11 @@ namespace UraraBabanuki.Scripts
                 card.SetOnClickAction(() => {
                     if (card == _selectCard)
                     {
-                        Debug.Log("!!!!");
+                        if (_enemyHand.CheckCardNumber(_selectCard.Number))
+                        {
+                            _enemyHand.DeleteCard(_selectCard.Number);
+                            _selectCard = default;
+                        }
                     }  
                     else if (_selectCard != default)
                     {
